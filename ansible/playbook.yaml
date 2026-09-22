@@ -1,0 +1,21 @@
+ - hosts: all
+   remote_user: timur
+   become: true
+ 
+   tasks:
+    - name: Add Docker repo
+      deb822_repository:
+       name: docker
+       types: deb
+       uris: https://download.docker.com/linux/ubuntu
+       suites: resolute
+       components: stable
+       architectures: amd64
+       signed_by: https://download.docker.com/linux/ubuntu/gpg
+    - name: Install Docker 
+      apt:
+       name: 
+        - docker-ce
+        - docker-compose-v2
+       state: present
+    

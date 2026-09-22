@@ -1,0 +1,41 @@
+name: nextcloud
+  
+services: 
+  
+  frontend: 
+   image: nginx:test
+   networks:
+    - frontend-net
+   ports:
+    - 80:80
+   volumes: 
+    - nextcloud-files:/var/www/html
+    
+  backend: 
+   image: nextcloud:stable-fpm
+   depends_on: 
+    - db
+   hostname: nextcloud.test
+   networks:
+    - frontend-net
+    - backend-net
+   volumes:
+     - nextcloud-files:/var/www/html
+  db:
+   image: postgres:alpine
+   hostname: postgres.test
+   volumes:
+    - postgres-data:/var/lib/postgresql/data
+   networks:
+    - backend-net
+   environment:
+    - POSTGRES_DB=nextcloud
+    - POSTGRES_USER=nextcloud
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+   
+volumes: 
+ postgres-data:
+ nextcloud-files:
+networks:
+ backend-net:
+ frontend-net:
