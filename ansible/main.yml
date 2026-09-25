@@ -1,0 +1,16 @@
+ - hosts: all
+   remote_user: timur
+   become: true
+ 
+ - name: Setup Docker environment for .deb based OS
+   ansible.builtin.include_role:
+      name: package_manager_bootstrap
+      tasks_from: setup_docker_env_deb.yml
+   when: ansible_facts['os_family'] == 'Debian'
+
+ - name: Setup Docker environment for .rpm based OS
+   ansible.builtin.include_role:
+      name: package_manager_bootstrap
+      tasks_from: setup_docker_env_rpm.yml
+   when: ansible_facts['os_family'] == 'RedHat'
+    

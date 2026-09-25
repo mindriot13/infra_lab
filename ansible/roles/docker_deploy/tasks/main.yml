@@ -1,7 +1,7 @@
- - hosts: all
-   remote_user: timur
+ - name: test
    become: true
- 
+   hosts: all
+   remote_user: timur
    tasks:
     - name: Add Docker repo
       deb822_repository:
@@ -12,10 +12,20 @@
        components: stable
        architectures: amd64
        signed_by: https://download.docker.com/linux/ubuntu/gpg
+      notify: apt_cache_update
     - name: Install Docker 
       apt:
        name: 
         - docker-ce
-        - docker-compose-v2
+        - docker-compose-plugin
        state: present
     
+    - name: Copy files
+      ansible.builtin.copy:
+       src: ../files
+       dest: /compose
+
+    - name: Start Compose
+      community.docker.docker_compose_v2:
+       project_src: /compose/files
+       state: present
